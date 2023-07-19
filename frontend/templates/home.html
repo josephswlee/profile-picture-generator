@@ -1,0 +1,105 @@
+<!-- home.html -->
+{% extends 'index.html' %}
+
+{% block content %}
+<style>
+    .content {
+        margin-top: 50px;  /* Adjust the value as needed */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(30vh - 100px);  /* Adjust the value as needed */
+    }
+
+    .form-container {
+        text-align: center;
+    }
+
+    form {
+            display: inline-block;
+        }
+    
+    .form-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .form-row label {
+        margin-right: 10px;
+    }
+    
+    .form-row input[type="text"],
+    .form-row select {
+        margin-right: 10px;
+    }
+    
+    .form-row input[type="file"] {
+        margin-right: 10px;
+        width: auto;
+    }
+</style>
+
+<div class="content">
+    <div class="form-container">
+        <form id="promptForm" action="/generate" method="POST">
+            <div class="form-row">
+                <label for="positive-prompt">Positive Prompt:</label>
+                <input type="text" id="positive-prompt" name="positive-prompt" required>
+            </div>
+
+            <div class="form-row">
+                <label for="negative-prompt">Negative Prompt:</label>
+                <input type="text" id="negative-prompt" name="negative_prompt" required>
+            </div>
+            
+            <div class="form-row">
+                <label for="image-style">Image Style:</label>
+                <select id="image-style" name="image_style" required>
+                    <option value="style1">Style 1</option>
+                    <option value="style2">Style 2</option>
+                    <option value="style3">Style 3</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label for="image-upload">Upload Image:</label>
+                <input type="file" id="image-upload" name="image_upload">
+            </div>
+
+            <button type="submit">Generate Image</button>
+        </form>
+    </div>
+</div>
+<div id="resultImage">
+</div>
+<script>
+    const form = document.getElementById('promptForm');
+    const resultImageDiv = document.getElementById('resultImage');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const positiveData = formData.get('positive-prompt');
+        const negativeData = formData.get('negative-prompt');
+
+        fetch('/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({'positivePrompts': positiveData, 
+                                       'negativePrompts': negativeData})
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const imageUrl = URL.createObjectURL(blob);
+            resultImageDiv.innerHTML = `<img src="${imageUrl}" alt="Result Image">`;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+{% endblock %}
