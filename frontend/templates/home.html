@@ -51,7 +51,7 @@
 
             <div class="form-row">
                 <label for="negative-prompt">Negative Prompt:</label>
-                <input type="text" id="negative-prompt" name="negative_prompt" required>
+                <input type="text" id="negative-prompt" name="negative-prompt" required>
             </div>
             
             <div class="form-row">
@@ -83,7 +83,7 @@
         const formData = new FormData(form);
         const positiveData = formData.get('positive-prompt');
         const negativeData = formData.get('negative-prompt');
-
+        
         fetch('/generate', {
             method: 'POST',
             headers: {
