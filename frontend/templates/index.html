@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Generation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .banner {
+            background-color: #f2f2f2;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-container {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        form {
+            display: inline-block;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input[type="text"],
+        select {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <h1>Image Generation</h1>
+    </div>
+
+    <div class="form-container">
+        <form id="promptForm" action="/generate" method="POST">
+            <label for="prompts">Prompts:</label>
+            <input type="text" id="prompts" name="prompts" required>
+
+            <label for="image-style">Image Style:</label>
+            <select id="image-style" name="image_style" required>
+                <option value="style1">Style 1</option>
+                <option value="style2">Style 2</option>
+                <option value="style3">Style 3</option>
+                <!-- Add more style options as needed -->
+            </select>
+
+            <label for="image-upload">Upload Image:</label>
+            <input type="file" id="image-upload" name="image_upload">
+
+            <button type="submit">Generate Image</button>
+        </form>
+        
+    </div>
+    <div id="resultImage">
+    </div>
+    <script>
+        const form = document.getElementById('promptForm');
+        const resultImageDiv = document.getElementById('resultImage');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = formData.get('prompts');
+
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({'prompts': data})
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const imageUrl = URL.createObjectURL(blob);
+                resultImageDiv.innerHTML = `<img src="${imageUrl}" alt="Result Image">`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
