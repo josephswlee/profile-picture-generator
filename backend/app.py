@@ -3,17 +3,23 @@ from flask_cors import CORS
 import io
 import torch
 from torch import autocast
-from diffusers import StableDiffusionPipeline, UniPCMultistepScheduler
+from diffusers import DiffusionPipeline, UniPCMultistepScheduler
 from PIL import Image
+import logging
 
 app = Flask(__name__, static_folder='../frontend/static', template_folder='../frontend/templates')
 
 CORS(app)
 
+# Configure the logging system to print to the terminal
+logging.basicConfig(level=logging.DEBUG)
+
 assert torch.cuda.is_available()
 
+
+
 model_id = "runwayml/stable-diffusion-v1-5"
-pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+pipeline = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
 # pipeline.scheduler = UniPCMultistepScheduler.from_config(pipeline.scheduler.config)
 
 # pipeline.load_lora_weights(".", weight_name="majicmixRealistic_v6.safetensors")
@@ -28,22 +34,9 @@ def run_inference(positive_prompt, negative_prompt):
     num_images_per_prompt=1,
     generator=torch.manual_seed(0),
     ).images[0]
-    image.save('test.png')
-    Image.open(image).show()
-    # with autocast("cuda"):
-    #     image = pipel(prompt)["sample"][0]  
-    img_data = io.BytesIO()
-    image.save(img_data, "PNG")
-    img_data.seek(0)
-    return img_data
-
-# def image_grid(imgs, rows=1, cols=2):
-#     w, h = imgs[0].size
-#     grid = Image.new("RGB", size=(cols * w, rows * h))
-
-#     for i, img in enumerate(imgs):
-#         grid.paste(img, box=(i % cols * w, i // cols * h))
-#     return grid
+    # image.save('test.png')
+    
+    return image
 
 
 @app.route("/")
@@ -55,9 +48,15 @@ def generate():
     try:
         # data = request.form['positivePrompts']
 
-        positive_prompt = request.args["positivePrompts"]
-        negative_prompt = request.args["negativePrompts"]
-        img_data = run_inference(positive_prompt, negative_prompt)
+        positive_prompt = request.form["positivePrompts"]
+        negative_prompt = request.form["negativePrompts"]
+        app.logger.info("Image generation started.")
+        image = run_inference(positive_prompt, negative_prompt)
+        app.logger.info("Image generation done.")
+
+        img_data = io.BytesIO()
+        image.save(img_data, "PNG")
+        img_data.seek(0)
         return send_file(img_data, mimetype='image/png')
         
     except Exception as e:
@@ -68,4 +67,5 @@ def about():
     return render_template('about.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.logger.info("server starts")
+    app.run(host='0.0.0.0', port=5000, debug=True)

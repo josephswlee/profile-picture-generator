@@ -94,6 +94,7 @@
         })
         .then(response => response.blob())
         .then(blob => {
+            console.log(blob)
             const imageUrl = URL.createObjectURL(blob);
             resultImageDiv.innerHTML = `<img src="${imageUrl}" alt="Result Image">`;
         })
