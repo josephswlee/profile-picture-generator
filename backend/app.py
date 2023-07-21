@@ -3,9 +3,23 @@ from flask_cors import CORS
 import io
 import torch
 from torch import autocast
-from diffusers import DiffusionPipeline, UniPCMultistepScheduler
+from diffusers import StableDiffusionPipeline, UniPCMultistepScheduler
 from PIL import Image
 import logging
+import os
+
+# Get the current directory of the 'app.py' script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Go one level up to reach the parent folder ('project_root')
+parent_dir = os.path.dirname(current_dir)
+
+# Combine the path to the 'models/checkpoints' folder
+checkpoint_folder = os.path.join(parent_dir)
+
+# pt_state_dict = safetensors.torch.load_file(checkpoint_folder, device="cpu")
+# torch.save(pt_state_dict, "pt_state_dict.bin")
+
 
 app = Flask(__name__, static_folder='../frontend/static', template_folder='../frontend/templates')
 
@@ -17,12 +31,11 @@ logging.basicConfig(level=logging.DEBUG)
 assert torch.cuda.is_available()
 
 
-
 model_id = "runwayml/stable-diffusion-v1-5"
-pipeline = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+# pipeline.unet.load_attn_procs("pt_state_dict.bin")
 # pipeline.scheduler = UniPCMultistepScheduler.from_config(pipeline.scheduler.config)
-
-# pipeline.load_lora_weights(".", weight_name="majicmixRealistic_v6.safetensors")
+pipeline.load_lora_weights('.', weight_name="3DMM_V12.safetensors", local_files_only=True)
 
 def run_inference(positive_prompt, negative_prompt):
     image = pipeline(
