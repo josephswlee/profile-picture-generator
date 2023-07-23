@@ -4,6 +4,16 @@ import io
 import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline, UniPCMultistepScheduler
+from diffusers import (
+    DDPMScheduler,
+    DDIMScheduler,
+    PNDMScheduler,
+    LMSDiscreteScheduler,
+    EulerDiscreteScheduler,
+    EulerAncestralDiscreteScheduler,
+    DPMSolverMultistepScheduler,
+    DPMSolverSDEScheduler,
+)
 from PIL import Image
 import random
 import logging
@@ -46,7 +56,15 @@ pipeline.to("cuda")
 
 # pipeline.unet.load_attn_procs("pt_state_dict.bin")
 # pipeline.scheduler = UniPCMultistepScheduler.from_config(pipeline.scheduler.config)
-pipeline.load_lora_weights('.', weight_name="3DMM_V12.safetensors", local_files_only=True)
+
+# load lora weights
+lora_path = '../models/lora'
+pipeline.load_lora_weights(lora_path, weight_name="mix4.safetensors", local_files_only=True)
+pipeline.load_lora_weights(lora_path, weight_name="AI_hh-ka.safetensors", local_files_only=True)
+pipeline.load_lora_weights(lora_path, weight_name="Droste_Effect.safetensors", local_files_only=True)
+pipeline.load_lora_weights(lora_path, weight_name="ClothingAdjuster2.safetensors", local_files_only=True)
+pipeline.load_lora_weights(lora_path, weight_name="more_details.safetensors", local_files_only=True)
+pipeline.load_lora_weights(lora_path, weight_name="add_detail.safetensors", local_files_only=True)
 
 def get_pipeline_embeds(pipeline, prompt, negative_prompt, device):
     """ Get pipeline embeds for prompts bigger than the maxlength of the pipe
