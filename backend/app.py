@@ -15,7 +15,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 
 # Combine the path to the 'models/checkpoints' folder
-checkpoint_folder = os.path.join(parent_dir)
+checkpoint_folder = os.path.join(parent_dir, "majicmixRealistic_v6.safetensors")
 
 # pt_state_dict = safetensors.torch.load_file(checkpoint_folder, device="cpu")
 # torch.save(pt_state_dict, "pt_state_dict.bin")
@@ -32,10 +32,20 @@ assert torch.cuda.is_available()
 
 
 model_id = "runwayml/stable-diffusion-v1-5"
-pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+# pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+
+pipeline = StableDiffusionPipeline.from_single_file(
+    checkpoint_folder,
+    torch_dtype=torch.float16,
+    scheduler_type = "dpm",
+    load_safety_checker = False,
+    use_safetensors=True
+)
+pipeline.to("cuda")
+
 # pipeline.unet.load_attn_procs("pt_state_dict.bin")
 # pipeline.scheduler = UniPCMultistepScheduler.from_config(pipeline.scheduler.config)
-pipeline.load_lora_weights('.', weight_name="3DMM_V12.safetensors", local_files_only=True)
+pipeline.load_lora_weights('.', weight_name="mix4.safetensors", local_files_only=True)
 
 def run_inference(positive_prompt, negative_prompt):
     image = pipeline(
