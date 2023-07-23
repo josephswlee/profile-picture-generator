@@ -21,7 +21,7 @@ export default function Form() {
   // Use state to manage the form data
   const [positiveData, setPositiveData] = useState('');
   const [negativeData, setNegativeData] = useState('');
-  const [imageUrl, setImageUrl] = useState(null); // State for the image preview URL
+  const [imageUrl, setImageUrl] = useState(''); // State for the image preview URL
 
   // Function to handle form submission
   const handleSubmit = (event) => {
@@ -42,8 +42,14 @@ export default function Form() {
         })
         .then(response => response.blob())
         .then(blob => {
-            const url = URL.createObjectURL(blob);
-            setImageUrl(url); // Update the imageUrl state with the new image URL
+            // const url = URL.createObjectURL(blob);
+            // setImageUrl(url); // Update the imageUrl state with the new image URL
+            // Convert the response blob to a base64 data URL
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setImageUrl(reader.result);
+            };
+            reader.readAsDataURL(blob);
         })
         .catch(error => {
             console.error('Error:', error);
