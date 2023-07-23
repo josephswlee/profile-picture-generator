@@ -5,6 +5,7 @@ import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline, UniPCMultistepScheduler
 from PIL import Image
+import random
 import logging
 import os
 
@@ -55,7 +56,7 @@ def run_inference(positive_prompt, negative_prompt):
     height=512,
     num_inference_steps=25,
     num_images_per_prompt=1,
-    generator=torch.manual_seed(0),
+    generator=torch.manual_seed(random.randint(1, 10000)),
     ).images[0]
     # image.save('test.png')
     
