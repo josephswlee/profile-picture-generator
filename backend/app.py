@@ -18,6 +18,7 @@ from PIL import Image
 import random
 import logging
 import os
+from utils.load_lora import load_lora
 
 # Get the current directory of the 'app.py' script
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,30 +42,39 @@ logging.basicConfig(level=logging.DEBUG)
 
 assert torch.cuda.is_available()
 
+# Get cuda gpu device
+# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 model_id = "runwayml/stable-diffusion-v1-5"
-# pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
 
-pipeline = StableDiffusionPipeline.from_single_file(
-    checkpoint_folder,
-    torch_dtype=torch.float16,
-    scheduler_type = "dpm",
-    load_safety_checker = False,
-    use_safetensors=True
-)
+# pipeline = StableDiffusionPipeline.from_single_file(
+#     checkpoint_folder,
+#     torch_dtype=torch.float16,
+#     scheduler_type = "dpm",
+#     load_safety_checker = False,
+#     use_safetensors=True
+# )
 pipeline.to("cuda")
 
 # pipeline.unet.load_attn_procs("pt_state_dict.bin")
 # pipeline.scheduler = UniPCMultistepScheduler.from_config(pipeline.scheduler.config)
 
 # load lora weights
-lora_path = '../models/lora'
-pipeline.load_lora_weights(lora_path, weight_name="mix4.safetensors", local_files_only=True)
-pipeline.load_lora_weights(lora_path, weight_name="AI_hh-ka.safetensors", local_files_only=True)
-pipeline.load_lora_weights(lora_path, weight_name="Droste_Effect.safetensors", local_files_only=True)
-pipeline.load_lora_weights(lora_path, weight_name="ClothingAdjuster2.safetensors", local_files_only=True)
-pipeline.load_lora_weights(lora_path, weight_name="more_details.safetensors", local_files_only=True)
-pipeline.load_lora_weights(lora_path, weight_name="add_detail.safetensors", local_files_only=True)
+lora_path = '../models/lora/'
+pipeline = load_lora(pipeline, lora_path + 'NataliePortmanV2Dogu.safetensors', 1, 'cuda', torch.float32)
+app.logger.info("load lora 1 succeed.")
+
+pipeline = load_lora(pipeline, lora_path + 'add_detail.safetensors', 1, 'cuda', torch.float32)
+app.logger.info("load lora 2 succeed.")
+
+# pipeline.load_lora_weights(lora_path, weight_name="mix4.safetensors", local_files_only=True)
+# pipeline.load_lora_weights(lora_path, weight_name="AI_hh-ka.safetensors", local_files_only=True)
+# pipeline.load_lora_weights(lora_path, weight_name="Droste_Effect.safetensors", local_files_only=True)
+# pipeline.load_lora_weights(lora_path, weight_name="ClothingAdjuster2.safetensors", local_files_only=True)
+# pipeline.load_lora_weights(lora_path, weight_name="more_details.safetensors", local_files_only=True)
+# pipeline.load_lora_weights(lora_path, weight_name="add_detail.safetensors", local_files_only=True)
 
 def get_pipeline_embeds(pipeline, prompt, negative_prompt, device):
     """ Get pipeline embeds for prompts bigger than the maxlength of the pipe
