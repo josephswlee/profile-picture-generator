@@ -56,10 +56,13 @@ Then in the second linear layer B, we map from $r$ back to $d$. To produce the f
 To train your LoRA, it is recommended to upload at least 10 to 15 pictures of yours.
 
 ### Frontend
+<div style="display: flex; justify-content: center;">
 
-![Alt text](/screenshot/frontend-1.png)
+![Image 1](/screenshot/frontend-1.png)
 
-![Untitled](/screenshot/frontend-2.png)
+![Image 2](/screenshot/frontend-2.png)
+
+</div>
 
 We used React.JS and tailwind.css to create the frontend of our app.
 
@@ -85,3 +88,10 @@ python app.py
 ```
 
 ## Results
+<div style="display: flex; justify-content: center;">
+
+![Image 1](/screenshot/result-1.png)
+
+![Image 2](/screenshot/result-2.png)
+
+</div>
