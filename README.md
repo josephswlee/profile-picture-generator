@@ -22,8 +22,8 @@ Virtual environment (conda or venv) with python version 3.10.6
     git clone https://github.com/your_username/your_project.git
     ```
     
-2. 
-```bash
+2. Install frontend dependencies
+    ```bash
     npm install
     ```
 
