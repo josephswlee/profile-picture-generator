@@ -27,7 +27,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 
 # Combine the path to the 'models/checkpoints' folder
-checkpoint_folder = os.path.join(parent_dir, "majicmixRealistic_v6.safetensors")
+checkpoint_folder = os.path.join("../models/checkpoints", "realisticVisionV50_v50VAE.safetensors")
 
 # pt_state_dict = safetensors.torch.load_file(checkpoint_folder, device="cpu")
 # torch.save(pt_state_dict, "pt_state_dict.bin")
@@ -46,16 +46,16 @@ assert torch.cuda.is_available()
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-model_id = "runwayml/stable-diffusion-v1-5"
-pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
+# model_id = "runwayml/stable-diffusion-v1-5"
+# pipeline = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
 
-# pipeline = StableDiffusionPipeline.from_single_file(
-#     checkpoint_folder,
-#     torch_dtype=torch.float16,
-#     scheduler_type = "dpm",
-#     load_safety_checker = False,
-#     use_safetensors=True
-# )
+pipeline = StableDiffusionPipeline.from_single_file(
+    checkpoint_folder,
+    torch_dtype=torch.float16,
+    scheduler_type = "dpm",
+    load_safety_checker = False,
+    use_safetensors=True
+)
 pipeline.to("cuda")
 
 # pipeline.unet.load_attn_procs("pt_state_dict.bin")
@@ -63,7 +63,7 @@ pipeline.to("cuda")
 
 # load lora weights
 lora_path = '../models/lora/'
-pipeline = load_lora(pipeline, lora_path + 'NataliePortmanV2Dogu.safetensors', 1, 'cuda', torch.float32)
+pipeline = load_lora(pipeline, lora_path + 'joe-1-10.safetensors', 1, 'cuda', torch.float32)
 app.logger.info("load lora 1 succeed.")
 
 pipeline = load_lora(pipeline, lora_path + 'add_detail.safetensors', 1, 'cuda', torch.float32)
@@ -123,6 +123,8 @@ def get_pipeline_embeds(pipeline, prompt, negative_prompt, device):
 
 def run_inference(positive_prompt, negative_prompt):
     try:
+        seed = random.randint(1, 10000000)
+        print("Randomly used seed is: ", seed)
         image = pipeline(
         prompt_embeds=positive_prompt,
         negative_prompt_embeds=negative_prompt,
@@ -132,7 +134,7 @@ def run_inference(positive_prompt, negative_prompt):
         height=512,
         num_inference_steps=25,
         num_images_per_prompt=1,
-        generator=torch.manual_seed(random.randint(1, 10000)),
+        generator=torch.manual_seed(seed),
         ).images[0]
         # image.save('test.png')
         
