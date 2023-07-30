@@ -89,17 +89,7 @@ python app.py
 ![Image 2](/screenshot/result-2.jpg)
 
 </div>
-<table>
-  <tr>
-    <td>
-
-![Image 1](/screenshot/result-1.png)
-
-    </td>
-    <td>
-
-![Image 2](/screenshot/result-2.jpg)
-
-    </td>
-  </tr>
-</table>
+<p float="middle">
+  <img src="/screenshot/result-1.png" width="50%" />
+  <img src="/screenshot/result-2.jpg" width="50%" /> 
+</p>
