@@ -89,3 +89,17 @@ python app.py
 ![Image 2](/screenshot/result-2.jpg)
 
 </div>
+<table>
+  <tr>
+    <td>
+
+![Image 1](/screenshot/result-1.png)
+
+    </td>
+    <td>
+
+![Image 2](/screenshot/result-2.jpg)
+
+    </td>
+  </tr>
+</table>
