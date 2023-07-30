@@ -27,7 +27,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 
 # Combine the path to the 'models/checkpoints' folder
-checkpoint_folder = os.path.join("../models/checkpoints", "realisticVisionV50_v50VAE.safetensors")
+checkpoint_folder = os.path.join(parent_dir, "realisticVisionV50_v50VAE.safetensors")
 
 # pt_state_dict = safetensors.torch.load_file(checkpoint_folder, device="cpu")
 # torch.save(pt_state_dict, "pt_state_dict.bin")
@@ -63,10 +63,10 @@ pipeline.to("cuda")
 
 # load lora weights
 lora_path = '../models/lora/'
-pipeline = load_lora(pipeline, lora_path + 'joe-1-10.safetensors', 1, 'cuda', torch.float32)
+pipeline = load_lora(pipeline, lora_path + 'lucy-1-10.safetensors', 1, 'cuda', torch.float32)
 app.logger.info("load lora 1 succeed.")
 
-pipeline = load_lora(pipeline, lora_path + 'add_detail.safetensors', 1, 'cuda', torch.float32)
+pipeline = load_lora(pipeline, lora_path + 'hairdetailer.safetensors', 1, 'cuda', torch.float32)
 app.logger.info("load lora 2 succeed.")
 
 # pipeline.load_lora_weights(lora_path, weight_name="mix4.safetensors", local_files_only=True)
@@ -130,8 +130,8 @@ def run_inference(positive_prompt, negative_prompt):
         negative_prompt_embeds=negative_prompt,
         # prompt=positive_prompt,
         # negative_prompt=negative_prompt,
-        width=512,
-        height=512,
+        width=768,
+        height=1024,
         num_inference_steps=25,
         num_images_per_prompt=1,
         generator=torch.manual_seed(seed),
