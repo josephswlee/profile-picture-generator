@@ -90,6 +90,6 @@ python app.py
 
 </div>
 <p float="middle">
-  <img src="/screenshot/result-1.png" width="50%" />
-  <img src="/screenshot/result-2.jpg" width="50%" /> 
+  <img src="/screenshot/result-1.png" width="49%" />
+  <img src="/screenshot/result-2.jpg" width="49%" /> 
 </p>
