@@ -29,13 +29,13 @@ npm install
 
 ### What is Stable Diffusion?
 
-![Stable Diffusion Model Architecture](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5b574d0e-80ca-43c6-a21b-475f1c2b9a57/Untitled.png)
+![Stable Diffusion Model Architecture](/screenshot/stable-diffusion.png)
 
 Stable Diffusion Model Architecture
 
 ### What is LoRA?
 
-![Merge LoRA weights into the base model](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e4c2efb8-db3f-434a-a298-2021519a6926/Untitled.png)
+![Merge LoRA weights into the base model](/screenshot/lora.png)
 
 Merge LoRA weights into the base model
 
@@ -57,9 +57,9 @@ To train your LoRA, it is recommended to upload at least 10 to 15 pictures of yo
 
 ### Frontend
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9656096d-62d7-4ae3-93e4-97f0804e41a1/Untitled.png)
+![Alt text](/screenshot/frontend-1.png)
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f758cd43-fefa-4752-9329-b28a40ffb461/Untitled.png)
+![Untitled](/screenshot/frontend-2.png)
 
 We used React.JS and tailwind.css to create the frontend of our app.
 
@@ -85,5 +85,3 @@ python app.py
 ```
 
 ## Results
-
-Using conda environment with python version 3.10.6
