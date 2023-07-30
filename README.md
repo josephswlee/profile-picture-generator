@@ -23,7 +23,10 @@ Virtual environment (conda or venv) with python version 3.10.6
     ```
     
 2. 
-npm install
+```bash
+    npm install
+    ```
+
 
 ## Background
 
